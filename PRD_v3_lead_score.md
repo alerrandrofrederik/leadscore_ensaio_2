@@ -5,7 +5,7 @@
 
 | Campo | Valor |
 |---|---|
-| Projeto | **Lead Score** (antes "Call First") |
+| Projeto | **Lead Score** |
 | Versão | **3.0** |
 | Status | Especificado, aguardando desenvolvimento |
 | Responsável | Alerrandro |
@@ -13,19 +13,6 @@
 | Cliente (cenário) | Atlas Software, empresa fictícia de software B2B |
 | Uso | Workshop de ~50 min para engenheiros e analistas de dados |
 | Dados | `lead_score_dados.zip` (gerado por `gerar_csvs.py`, seed fixa) |
-
----
-
-## 0 · O que muda da V2 para a V3
-
-| Tema | V2 (Call First) | V3 (Lead Score) |
-|---|---|---|
-| Nome | Call First | **Lead Score** |
-| Volume diário | 300 leads, capacidade de 20 (6,7%) | **100 leads, capacidade de 20 (20%)** |
-| Catálogo | `call_first` | **`lead_score`** |
-| Arquivo do dia | `leads_DEMO.csv` | **`leads_AAAA-MM-DD.csv`**, como uma exportação diária de verdade |
-| Dataset | 300 linhas, 181 empresas | **100 linhas, 121 empresas**: mais fácil de mostrar e conferir ao vivo |
-| Escopo da apresentação | Até o Data App + agente, sem backtest | Igual |
 
 ---
 
