@@ -6,10 +6,10 @@ Gerados por `gerar_csvs.py` (seed 42, data de referência 2026-11-22). Para o di
 ## Onde subir
 | Pasta local | Destino no Volume | Quando |
 |---|---|---|
-| `raw/empresas/` | `/Volumes/lead_score/landing/raw/empresas/` | antes da demo |
-| `raw/historico/` | `/Volumes/lead_score/landing/raw/historico/` | antes da demo |
-| `raw/leads/` | `/Volumes/lead_score/landing/raw/leads/` | **ao vivo** |
-| `gabarito/` | fora do `raw` (ex.: `/Volumes/lead_score/landing/gabarito/`) | antes da demo |
+| `raw/empresas/` | `/Volumes/lh_leadscore_ensaio2/landing/raw/empresas/` | antes da demo |
+| `raw/historico/` | `/Volumes/lh_leadscore_ensaio2/landing/raw/historico/` | antes da demo |
+| `raw/leads/` | `/Volumes/lh_leadscore_ensaio2/landing/raw/leads/` | **ao vivo** |
+| `gabarito/` | fora do `raw` (ex.: `/Volumes/lh_leadscore_ensaio2/landing/gabarito/`) | antes da demo |
 
 ## leads_2026-11-22.csv (100 linhas → 96 leads únicos)
 - Após deduplicação: 26 compra_imediata · 36 avaliando · 16 suporte · 18 spam → **6 compras ficam fora da fila de 20**.

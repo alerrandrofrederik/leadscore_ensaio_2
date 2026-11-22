@@ -1,0 +1,15 @@
+# Pipeline medalhão do Lead Score (Lakeflow Spark Declarative Pipelines, serverless)
+resources:
+  pipelines:
+    lead_score_pipeline:
+      name: lh_leadscore_ensaio2_pipeline
+      catalog: ${var.catalog}
+      schema: ${resources.schemas.gold.name}
+      serverless: true
+      channel: CURRENT
+      photon: true
+      libraries:
+        - glob:
+            include: ../src/pipeline/**
+      configuration:
+        lead_score.catalog: ${var.catalog}

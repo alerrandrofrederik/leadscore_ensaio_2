@@ -147,7 +147,7 @@ Para atender todo mundo, o time teria que ser **5 vezes maior**. Isso não vai a
 
 **Contexto:** todo dia os sistemas de origem (formulário do site, base cadastral e CRM) **exportam CSVs**, que são enviados ao Volume do Unity Catalog. A partir daí, tudo acontece no Databricks.
 
-**Local:** `/Volumes/lead_score/landing/raw/`
+**Local:** `/Volumes/lh_leadscore_ensaio2/landing/raw/`
 
 | Pasta | Arquivo | Origem simulada | Conteúdo | Chave |
 |---|---|---|---|---|
@@ -196,19 +196,21 @@ Com 20 vagas, **6 leads de compra imediata ficam fora da fila**. É a resposta q
 
 | Rótulo | Descrição passada ao modelo |
 |---|---|
-| `compra_imediata` | Pede preço, proposta, quantidade de licenças, prazo ou reunião comercial |
-| `avaliando` | Quer conhecer o produto, comparar opções ou ver uma demonstração, sem urgência |
-| `suporte` | Já é cliente e relata problema, dúvida de uso ou pede ajuda técnica |
-| `spam` | Sem relação com compra: propaganda, teste, texto sem sentido |
+| `compra_imediata` | Quer comprar produtos da Atlas Software: pede preço, proposta, quantidade de licenças, prazo ou reunião comercial |
+| `avaliando` | Quer conhecer os produtos da Atlas, comparar opções ou ver uma demonstração, sem urgência |
+| `suporte` | Já é cliente da Atlas e relata problema, dúvida de uso ou pede ajuda técnica |
+| `spam` | Sem relação com comprar da Atlas: oferta ou propaganda de terceiros (SEO, empréstimo, marketing), teste ou texto sem sentido, mesmo que use palavras como urgente, proposta ou preço |
+
+> **Lição do ensaio:** com a descrição genérica de `spam` ("sem relação com compra"), a pegadinha P2 (spam de SEO cheio de "urgente/proposta/preço") caía em `compra_imediata`. Deixar claro que a compra é **de produtos Atlas** e que oferta de terceiros é spam levou a acurácia a 100%. A descrição do rótulo é regra de negócio.
 
 ```sql
 ai_classify(
   mensagem,
   '{
-    "compra_imediata": "Pede preço, proposta, quantidade de licenças, prazo ou reunião comercial",
-    "avaliando":       "Quer conhecer, comparar ou ver demo, sem urgência",
-    "suporte":         "Já é cliente e relata problema ou dúvida de uso",
-    "spam":            "Sem relação com compra"
+    "compra_imediata": "Quer comprar produtos da Atlas Software: pede preço, proposta, quantidade de licenças, prazo ou reunião comercial",
+    "avaliando":       "Quer conhecer os produtos da Atlas, comparar opções ou ver uma demonstração, sem urgência",
+    "suporte":         "Já é cliente da Atlas e relata problema, dúvida de uso ou pede ajuda técnica",
+    "spam":            "Sem relação com comprar da Atlas: oferta ou propaganda de terceiros (SEO, empréstimo, marketing), teste ou texto sem sentido, mesmo que use palavras como urgente, proposta ou preço"
   }',
   map('version', '2.1')
 ) AS intencao_raw
@@ -234,14 +236,14 @@ ai_extract(
   '{
     "produto":            {"type": "string",  "description": "Produto Atlas citado"},
     "qtd_licencas":       {"type": "integer", "description": "Quantidade de licenças ou usuários"},
-    "prazo":              {"type": "string",  "description": "Prazo ou data desejada"},
+    "prazo":              {"type": "string",  "description": "Prazo ou data desejada, só o mês ou a data, sem preposição (ex.: dezembro)"},
     "orcamento_aprovado": {"type": "boolean", "description": "Mencionou orçamento aprovado"},
     "cargo":              {"type": "string",  "description": "Cargo de quem escreveu"},
-    "concorrente_citado": {"type": "string",  "description": "Concorrente mencionado"}
+    "concorrente_citado": {"type": "string",  "description": "Sistema concorrente de outra empresa que o lead usa ou avalia (nunca um produto Atlas)"}
   }',
   map('version', '2.1')
 ) AS entidades_raw
--- retorna VARIANT: entidades_raw:response:qtd_licencas::int
+-- retorna VARIANT: entidades_raw:response.qtd_licencas.value::int
 ```
 
 **Salvaguardas**
@@ -337,7 +339,7 @@ flowchart LR
     C2[empresas_*.csv]
     C3[oportunidades_*.csv]
   end
-  subgraph Databricks [Databricks · Unity Catalog · lead_score]
+  subgraph Databricks [Databricks · Unity Catalog · lh_leadscore_ensaio2]
     V[(Volume<br/>landing.raw)]
     B[Bronze<br/>Auto Loader]
     S[Silver<br/>limpo + unido]
@@ -432,7 +434,7 @@ flowchart LR
 
 | Marco | Entrega | Requisitos | Pronto quando |
 |---|---|---|---|
-| **M0** · Ambiente | Catálogo `lead_score`, Volume `raw`, CSVs de empresas e histórico carregados, teste das AI Functions | — | Notebook 00 OK |
+| **M0** · Ambiente | Catálogo `lh_leadscore_ensaio2`, Volume `raw`, CSVs de empresas e histórico carregados, teste das AI Functions | — | Notebook 00 OK |
 | **M1** · Bronze | Auto Loader das 3 pastas | RF-01, RF-02 | CA-01, CA-02 |
 | **M2** · Silver | Limpeza, deduplicação e junção | RF-03 a RF-06 | CA-03, CA-04 |
 | **M3** · Gold | IA, score e fila | RF-07 a RF-12 | CA-05 a CA-09, CA-12 |
