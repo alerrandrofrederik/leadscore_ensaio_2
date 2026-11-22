@@ -1,0 +1,20 @@
+# Lead Score · bundle de dados (pipeline Bronze → Silver → Gold + setup)
+bundle:
+  name: lh_leadscore_ensaio2
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo do Lead Score (já existe, com schemas e volumes)
+    default: lh_leadscore_ensaio2
+  warehouse_id:
+    description: SQL Warehouse usado pelo setup
+    default: a50e6a998ebe9440
+
+targets:
+  dev:
+    default: true
+    workspace:
+      profile: lead_score

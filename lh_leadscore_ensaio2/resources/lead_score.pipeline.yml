@@ -1,0 +1,14 @@
+resources:
+  pipelines:
+    lead_score_pipeline:
+      name: lh_leadscore_ensaio2_pipeline
+      catalog: ${var.catalog}
+      schema: gold
+      serverless: true
+      photon: true
+      channel: CURRENT
+      configuration:
+        lead_score.catalog: ${var.catalog}
+      libraries:
+        - glob:
+            include: ../src/pipeline/**

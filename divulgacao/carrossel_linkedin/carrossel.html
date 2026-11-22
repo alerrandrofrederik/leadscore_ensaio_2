@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Quem sabe faz ao vivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1433;
+    --navy-2: #12224f;
+    --azul: #1d56d8;
+    --azul-claro: #5b8cff;
+    --verde: #12a37a;
+    --amarelo: #f5b82e;
+    --vermelho: #e5484d;
+    --branco: #ffffff;
+    --texto-suave: #b9c6ea;
+  }
+  @page { size: 1080px 1350px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--navy); }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; color: var(--branco); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .slide {
+    width: 1080px; height: 1350px; position: relative; overflow: hidden;
+    padding: 84px 72px 0;
+    background:
+      radial-gradient(900px 700px at 100% 0%, rgba(29, 86, 216, .55), transparent 60%),
+      radial-gradient(700px 600px at 0% 100%, rgba(91, 140, 255, .22), transparent 60%),
+      var(--navy);
+    page-break-after: always; break-after: page;
+    display: flex; flex-direction: column;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  body.um-slide .slide { display: none; }
+  body.um-slide .slide.ativo { display: flex; }
+
+  .topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; }
+  .selo {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-size: 26px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .ao-vivo {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--vermelho); color: var(--branco); border-radius: 999px;
+    padding: 8px 20px; font-size: 22px; font-weight: 800; letter-spacing: .12em;
+  }
+  .ao-vivo::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--branco); }
+  .data-topo { font-size: 26px; font-weight: 600; color: var(--texto-suave); }
+
+  .kicker { font-size: 28px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--azul-claro); margin-bottom: 24px; }
+  h1 { font-size: 92px; line-height: 1.02; font-weight: 900; letter-spacing: -.02em; }
+  h2 { font-size: 70px; line-height: 1.06; font-weight: 900; letter-spacing: -.015em; }
+  .destaque { color: var(--amarelo); }
+  .azul { color: var(--azul-claro); }
+  p.corpo { font-size: 36px; line-height: 1.4; color: var(--texto-suave); margin-top: 28px; }
+  p.corpo b { color: var(--branco); }
+
+  /* slides de print: conteúdo centralizado na vertical */
+  .slide > .kicker:first-child { margin-top: auto; }
+  .slide > .kicker:first-child ~ .rodape { margin-top: auto; }
+  .fluxo { font-size: 30px !important; }
+  .rodape {
+    margin-top: auto; height: 120px; display: flex; align-items: center; justify-content: space-between;
+    border-top: 2px solid rgba(255,255,255,.12); font-size: 26px; color: var(--texto-suave);
+  }
+  .rodape b { color: var(--branco); }
+  .arrasta { font-weight: 700; color: var(--branco); }
+
+  /* moldura de print, com recorte por CSS: --x --y --w --h (px da imagem) e --s (escala) */
+  .moldura {
+    margin-top: 44px; align-self: center; border-radius: 22px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 3px rgba(255,255,255,.14);
+    background: #fff; position: relative;
+  }
+  .crop { width: calc(var(--w) * var(--s) * 1px); height: calc(var(--h) * var(--s) * 1px); overflow: hidden; position: relative; }
+  .crop img {
+    position: absolute; width: calc(1378px * var(--s));
+    left: calc(var(--x) * var(--s) * -1px); top: calc(var(--y) * var(--s) * -1px);
+  }
+  .marca {
+    position: absolute; border: 6px solid var(--amarelo); border-radius: 18px;
+    box-shadow: 0 0 0 6px rgba(245, 184, 46, .25);
+  }
+  .etiqueta {
+    position: absolute; background: var(--amarelo); color: var(--navy); font-weight: 900;
+    font-size: 26px; padding: 8px 18px; border-radius: 12px; white-space: nowrap;
+  }
+
+  /* slide 1 */
+  .numeros { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 64px; }
+  .num {
+    border-radius: 28px; padding: 40px 40px 36px; background: rgba(255,255,255,.06);
+    border: 2px solid rgba(255,255,255,.12);
+  }
+  .num .v { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -.03em; }
+  .num .l { font-size: 32px; color: var(--texto-suave); margin-top: 14px; }
+  .num.alerta .v { color: var(--amarelo); }
+  .pergunta { margin-top: 64px; font-size: 64px; font-weight: 900; line-height: 1.1; }
+
+  /* slide 3 */
+  .fluxo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 36px; font-size: 26px; font-weight: 700; }
+  .fluxo span.e { background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.16); border-radius: 12px; padding: 10px 16px; }
+  .fluxo span.e.ia { background: var(--azul); border-color: var(--azul-claro); }
+  .fluxo span.s { color: var(--azul-claro); }
+
+  /* slide 5 */
+  .evento {
+    margin-top: 52px; border-radius: 32px; padding: 48px; background: var(--branco); color: var(--navy);
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+  }
+  .evento .nome { font-size: 30px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--azul); }
+  .evento .quando { font-size: 84px; font-weight: 900; line-height: 1.05; margin-top: 14px; letter-spacing: -.02em; }
+  .evento .onde { font-size: 34px; font-weight: 600; margin-top: 18px; color: #3a4466; }
+  .evento .link {
+    margin-top: 30px; display: inline-block; background: var(--vermelho); color: var(--branco);
+    font-size: 30px; font-weight: 800; padding: 18px 28px; border-radius: 16px;
+  }
+  .lista { margin-top: 44px; display: grid; gap: 20px; font-size: 34px; line-height: 1.3; }
+  .lista div { display: flex; gap: 18px; }
+  .lista div::before { content: '✓'; color: var(--verde); font-weight: 900; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Gancho -->
+<section class="slide" id="s1">
+  <div class="topo">
+    <span class="selo">Quem sabe faz <span class="ao-vivo">AO VIVO</span></span>
+    <span class="data-topo">24/11 · 19h30</span>
+  </div>
+  <div class="kicker">Um case real de dados + IA</div>
+  <h1>100 leads por dia.<br>Capacidade para <span class="destaque">20</span>.</h1>
+  <div class="numeros">
+    <div class="num"><div class="v">100</div><div class="l">leads chegam todo dia</div></div>
+    <div class="num alerta"><div class="v">20</div><div class="l">conversas que o time consegue ter</div></div>
+  </div>
+  <div class="pergunta">Quais <span class="destaque">20</span>?<br><span class="azul">A IA decide em minutos.</span></div>
+  <div class="rodape"><span>Jornada de Dados · <b>Quem sabe faz</b></span><span class="arrasta">arraste →</span></div>
+</section>
+
+<!-- 2 · Herói -->
+<section class="slide" id="s2">
+  <div class="kicker">A IA acha o comprador escondido</div>
+  <h2>Chegou às 17h48.<br>Por ordem de chegada, seria o <span class="destaque">89º</span>.<br>Com IA, é o <span class="destaque">#1</span>.</h2>
+  <div class="moldura">
+    <div class="crop" style="--x:330;--y:330;--w:1000;--h:430;--s:0.936">
+      <img src="img/fila_raw.jpg" alt="Card do lead #1 na Fila do Dia">
+    </div>
+    <div class="marca" style="left:10px;top:28px;width:384px;height:50px"></div>
+    <div class="marca" style="left:643px;top:58px;width:104px;height:66px"></div>
+  </div>
+  <p class="corpo"><b>ai_classify</b> lê a intenção e <b>ai_extract</b> tira da mensagem: 200 licenças, prazo, orçamento aprovado e concorrente.</p>
+  <div class="rodape"><span>Fila do Dia · Data App no Databricks</span><span><b>2</b>/5</span></div>
+</section>
+
+<!-- 3 · Gestor -->
+<section class="slide" id="s3">
+  <div class="kicker">Do CSV ao painel de decisão</div>
+  <h2>Pipeline + IA + App,<br>com <span class="destaque">99%</span> de acurácia.</h2>
+  <div class="fluxo">
+    <span class="e">CSV</span><span class="s">→</span>
+    <span class="e">Bronze</span><span class="s">→</span>
+    <span class="e">Silver</span><span class="s">→</span>
+    <span class="e ia">Gold + IA</span><span class="s">→</span>
+    <span class="e">Data App</span>
+  </div>
+  <div class="moldura">
+    <div class="crop" style="--x:262;--y:62;--w:1092;--h:568;--s:0.86">
+      <img src="img/gestor_raw.jpg" alt="Visão do Gestor do app Lead Score">
+    </div>
+    <div class="marca" style="left:772px;top:330px;width:156px;height:150px"></div>
+  </div>
+  <div class="rodape"><span>Lakeflow · Unity Catalog · AI Functions · AppKit</span><span><b>3</b>/5</span></div>
+</section>
+
+<!-- 4 · Agente -->
+<section class="slide" id="s4">
+  <div class="kicker">Um agente que responde o negócio</div>
+  <h2>“Quais compras imediatas ficaram fora da fila?”</h2>
+  <p class="corpo">O gestor pergunta em português. O <b>Genie</b> consulta as tabelas Gold e responde: <b class="destaque">6 leads</b>, com nome, canal e motivo.</p>
+  <div class="moldura">
+    <div class="crop" style="--x:596;--y:210;--w:736;--h:420;--s:1.27">
+      <img src="img/agente_raw.jpg" alt="Agente Genie respondendo no app">
+    </div>
+    <div class="etiqueta" style="right:20px;bottom:20px">6 leads fora da fila</div>
+  </div>
+  <div class="rodape"><span>AI/BI Genie dentro do app</span><span><b>4</b>/5</span></div>
+</section>
+
+<!-- 5 · Convite -->
+<section class="slide" id="s5">
+  <div class="topo">
+    <span class="selo">Quem sabe faz <span class="ao-vivo">AO VIVO</span></span>
+  </div>
+  <h2>Vamos construir tudo isso <span class="destaque">do zero</span>, ao vivo.</h2>
+  <div class="lista">
+    <div>Pipeline Bronze → Silver → Gold no Databricks</div>
+    <div>IA no SQL: ai_classify e ai_extract</div>
+    <div>Data App + agente Genie, com Claude Code</div>
+  </div>
+  <div class="evento">
+    <div class="nome">Live · Jornada de Dados</div>
+    <div class="quando">24/11/2026<br>às 19h30</div>
+    <div class="onde">Ao vivo no YouTube · ative o lembrete e traga suas perguntas</div>
+    <div class="link">youtube.com/watch?v=CecGefU894Y</div>
+  </div>
+  <div class="rodape"><span>Aluno da Jornada de Dados: <b>te vejo lá!</b></span><span><b>5</b>/5</span></div>
+</section>
+
+<script>
+  // ?slide=N mostra só aquele slide (para exportar os PNGs)
+  const n = new URLSearchParams(location.search).get('slide');
+  if (n) {
+    document.body.classList.add('um-slide');
+    document.getElementById('s' + n)?.classList.add('ativo');
+  }
+</script>
+</body>
+</html>

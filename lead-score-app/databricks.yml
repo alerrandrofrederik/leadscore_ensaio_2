@@ -1,0 +1,46 @@
+bundle:
+  name: lead-score-app
+
+variables:
+  sql_warehouse_id:
+    description: SQL Warehouse ID
+  genie_space_id:
+    description: Default Genie Space ID
+  genie_space_name:
+    description: Genie Space display name
+
+resources:
+  apps:
+    app:
+      name: "lead-score-app"
+      description: "Lead Score: Fila do Dia, Visão do Gestor e Agente Comercial"
+      source_code_path: ./
+
+      # Start the app automatically on deploy.
+      lifecycle:
+        started: true
+      user_api_scopes:
+        - dashboards.genie
+
+      # The resources which this app has access to.
+      resources:
+        - name: sql-warehouse
+          sql_warehouse:
+            id: ${var.sql_warehouse_id}
+            permission: CAN_USE
+        - name: genie-space
+          genie_space:
+            name: ${var.genie_space_name}
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
+
+targets:
+  default:
+    default: true
+    workspace:
+      host: https://dbc-302cbd09-e572.cloud.databricks.com
+
+    variables:
+      sql_warehouse_id: a50e6a998ebe9440
+      genie_space_id: 01f1e654841b1d0db34707ac0c629a13
+      genie_space_name: Lead Score · Agente Comercial
