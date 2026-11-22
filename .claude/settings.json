@@ -1,5 +1,31 @@
 {
   "enabledPlugins": {
     "databricks@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(databricks:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(py:*)",
+      "Bash(set -a*)",
+      "Bash(export MSYS_NO_PATHCONV=1*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Edit(lh_leadscore_ensaio2/**)",
+      "Write(lh_leadscore_ensaio2/**)",
+      "Edit(lead-score-app/**)",
+      "Write(lead-score-app/**)"
+    ],
+    "deny": [
+      "Bash(databricks catalogs delete:*)",
+      "Bash(databricks schemas delete:*)",
+      "Bash(databricks volumes delete:*)",
+      "Bash(databricks apps delete:*)",
+      "Bash(bash scripts/reset_demo.sh:*)"
+    ]
   }
 }
